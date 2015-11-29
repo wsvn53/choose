@@ -138,6 +138,9 @@ static void choose_(task_t task, void *baton, unsigned type, vm_range_t *ranges,
         const malloc_zone_t * zone = reinterpret_cast<const malloc_zone_t *>(zones[i]);
         if (zone == NULL || zone->introspect == NULL)
             continue;
+        // only find in 'DefaultMallocZone'
+        if (strcmp(zone->zone_name, "DefaultMallocZone") != 0)
+            continue;
         zone->introspect->enumerator(mach_task_self(), &choice, MALLOC_PTR_IN_USE_RANGE_TYPE, zones[i], &read_memory, &choose_);
     }
     
