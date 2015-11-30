@@ -10,9 +10,6 @@ import commands
 import os
 
 def choose(debugger, command, result, internal_dict):
-    # detect choose.dylib loaded;
-    # if debugger.HandleCommand('image list choose.dylib') == False:
-        # print >>result, 'choose.dylib not loaded.'
     debugger.HandleCommand('expr (void *)dlopen("'+os.path.dirname(__file__)+'/choose.dylib", 0x2)')
     debugger.HandleCommand('po [choose choose:@"'+command+'"]')
 
