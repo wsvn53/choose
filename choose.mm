@@ -122,11 +122,10 @@ static void choose_(task_t task, void *baton, unsigned type, vm_range_t *ranges,
     assert(classes != NULL);
     
     choice choice;
-    Class _class = NSClassFromString(className);
     
     for (size_t i = 0; i != number; ++i) {
         for (Class current = classes[i]; current != Nil; current = class_getSuperclass(current)) {
-            if (current == _class) {
+            if ([[NSStringFromClass(current) lowercaseString] isEqualToString:[className lowercaseString]]) {
                 choice.query_.insert(classes[i]);
                 break;
             }
@@ -139,7 +138,7 @@ static void choose_(task_t task, void *baton, unsigned type, vm_range_t *ranges,
         if (zone == NULL || zone->introspect == NULL)
             continue;
         // only find in 'DefaultMallocZone'
-        if (strcmp(zone->zone_name, "DefaultMallocZone") != 0)
+        if (zone->zone_name && strcmp(zone->zone_name, "DefaultMallocZone") != 0)
             continue;
         zone->introspect->enumerator(mach_task_self(), &choice, MALLOC_PTR_IN_USE_RANGE_TYPE, zones[i], &read_memory, &choose_);
     }
