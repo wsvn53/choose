@@ -3,7 +3,7 @@
 # @Author: Ethan
 # @Date:   2015-11-29
 # @Last Modified by:   Ethan
-# @Last Modified time: 2016-01-07
+# @Last Modified time: 2016-01-08
 
 import lldb
 import commands
@@ -28,11 +28,10 @@ def choose_device(debugger, command, result, internal_dict):
         debugger.HandleCommand('expr NSString * $dylib_path = (NSString *)[NSTemporaryDirectory() stringByAppendingString:@"choose.dylib"]')
         debugger.HandleCommand('expr NSData * $dylib_data = (NSData *)[[NSData alloc] initWithBase64EncodedString:$dylib_string options:0]')
         debugger.HandleCommand('expr (BOOL)[$dylib_data writeToFile:$dylib_path atomically:YES]')
-        debugger.HandleCommand('expr (void)printf("saved to %s, %d bytes..\\n", (char *)[$dylib_path cStringUsingEncoding:0x4], $dylib_data.length)')
+        debugger.HandleCommand('expr (void)NSLog(@"saved to %@, %d bytes..", $dylib_path, $dylib_data.length)')
         debugger.HandleCommand('expr (void *)dlopen((char *)[$dylib_path cStringUsingEncoding:0x4], 0x2)')
     debugger.HandleCommand('po [choose choose:@"'+command+'"]')
 
 def __lldb_init_module(debugger, internal_dict):
     debugger.HandleCommand('command script add choose -f choose.choose')
-    debugger.HandleCommand('command script add choose_dev -f choose.choose_device')
     print 'The "choose" python command has been installed and is ready for use.'
